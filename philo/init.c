@@ -6,7 +6,7 @@
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 15:00:00 by jterrada          #+#    #+#             */
-/*   Updated: 2025/03/03 22:16:55 by jterrada         ###   ########.fr       */
+/*   Updated: 2025/03/06 14:06:54 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,24 @@ int	data_init(t_data *data)
 	int i;
 
 	data->end_simulation = false;
-	if (!safe_malloc((void **)&data->philos, sizeof(t_philo) * data->philo_nbr)
-		|| !safe_malloc((void **)&data->forks, sizeof(t_fork) * data->philo_nbr))
+	data->threads_ready = false;
+	pthread_mutex_init(&data->data_mutex, NULL); //TODO  SAFE
+	pthread_mutex_init(&data->write_mutex, NULL); //TODO  SAFE
+	if (!safe_malloc((void **)&data->philos, sizeof(t_philo) * data->philo_nbr) )
 		return (FAILURE);
+	if (!safe_malloc((void **)&data->forks, sizeof(t_fork) * data->philo_nbr))
+	{
+		free(data->philos);
+		return (FAILURE);
+	}
 	i = -1;
 	while (++i < data->philo_nbr)
 	{
-		if (!pthread_mutex_init(&data->forks[i].fork, NULL))
+		if (pthread_mutex_init(&data->forks[i].fork, NULL) != 0)
+		{
+			clean_partial_data(data, i);
 			return (FAILURE);
+		}
 		data->forks[i].fork_id = i;
 	}
 	return (SUCCESS);
