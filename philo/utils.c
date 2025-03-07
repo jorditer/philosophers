@@ -6,7 +6,7 @@
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 15:36:11 by jterrada          #+#    #+#             */
-/*   Updated: 2025/03/06 14:04:36 by jterrada         ###   ########.fr       */
+/*   Updated: 2025/03/07 15:00:09 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	precise_usleep(long usec, t_data *data)
 	while (time - start < usec)
 	{
 		gettime(MICROSECOND, &time);
-		if (simulation_finished(data, &finished == FAILURE))
+		if (simulation_finished(data, &finished) == FAILURE)
 			return (FAILURE);
 		if (finished)
 			break ;
@@ -68,7 +68,7 @@ int	precise_usleep(long usec, t_data *data)
 		{
 			// SPINLOCK
 			while (time - start < usec)
-				;
+				gettime(MICROSECOND, &time);
 		}
 	}
 	return (SUCCESS);

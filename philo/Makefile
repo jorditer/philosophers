@@ -6,20 +6,21 @@
 #    By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/14 21:11:29 by jordi             #+#    #+#              #
-#    Updated: 2025/03/03 22:17:48 by jterrada         ###   ########.fr        #
+#    Updated: 2025/03/07 12:33:29 by jterrada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 NAME = philo
-SRC = philo.c utils.c parsing.c safe_functions.c checks.c init.c start.c
+SRC = philo.c utils.c parsing.c safe_functions.c checks.c init.c start.c \
+		sync.c clean.c setters.c write.c
 OBJ = $(SRC:.c=.o)
 HEADERS = -I. -pthread
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) Makefile philo.h
 	@echo "🚧 Building $(NAME) executable..."
 	@$(CC) $(OBJ) $(HEADERS) -o $(NAME)
 	@echo "🎉 $(NAME) ready to play!\n"

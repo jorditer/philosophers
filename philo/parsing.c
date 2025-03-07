@@ -6,7 +6,7 @@
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 12:39:55 by jterrada          #+#    #+#             */
-/*   Updated: 2025/03/03 15:37:11 by jterrada         ###   ########.fr       */
+/*   Updated: 2025/03/07 14:49:26 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,10 @@ static long ft_atol(const char *str)
 	num = 0;
 	valid_input(&str);
 	while (is_num(*str))
+	{
 		num = (num * 10) + (*str - '0');
+		str++;
+	}
 	if (num > INT_MAX)
 		return (-1);
 	return (num);
@@ -58,11 +61,11 @@ int	parse_input(t_data *data, int argc, char **argv)
 {
 	data->philo_nbr = ft_atol(argv[1]);
 	data->time_to_die = ft_atol(argv[2]) * 1e3;
-	data->time_to_eat = ft_atol(argv[3]);
-	data->time_to_sleep = ft_atol(argv[4]);
-	if (data->time_to_die < 6e4
-		|| data->time_to_eat < 6e4
-		|| data->time_to_sleep)
+	data->time_to_eat = ft_atol(argv[3]) * 1e3;
+	data->time_to_sleep = ft_atol(argv[4]) * 1e3;
+	if (data->time_to_die < 60
+		|| data->time_to_eat < 60
+		|| data->time_to_sleep < 60)
 		return (FAILURE);
 	if (argc == 6)
 		data->nbr_limit_meals = ft_atol(argv[5]);

@@ -6,7 +6,7 @@
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:05:35 by jterrada          #+#    #+#             */
-/*   Updated: 2025/03/06 15:06:56 by jterrada         ###   ########.fr       */
+/*   Updated: 2025/03/07 11:40:18 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void write_status_debug(t_philo_status status, t_philo *philo, long elaps
 {
 	bool	finished;
 
-	simulation_finished(philo->data, finished);
+	simulation_finished(philo->data, &finished);
     if (TAKE_FIRST_FORK == status && !finished)
         printf(W"%6ld"RST" %d has taken the 1° fork 🍴"
             "\t\t\t"B"[ %d ]"RST, elapsed, philo->id,

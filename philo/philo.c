@@ -6,7 +6,7 @@
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:56:26 by jterrada          #+#    #+#             */
-/*   Updated: 2025/03/03 22:17:35 by jterrada         ###   ########.fr       */
+/*   Updated: 2025/03/07 14:17:49 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,18 @@ int	main(int argc, char **argv)
 	//2 create the thing
 	if (!data_init(&data))
 		return (1);
+	if (!philo_init(&data))
+	{
+		clean_data(&data);
+		return (1);
+	}
 
 	//3 start simulation
-
+	if (!dinner_start(&data))
+	{
+		clean_data(&data);
+		return (1);
+	}
 	//4 clean (philos full or 1 died)
 
 	printf("test");

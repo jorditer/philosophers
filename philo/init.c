@@ -6,7 +6,7 @@
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 15:00:00 by jterrada          #+#    #+#             */
-/*   Updated: 2025/03/06 14:06:54 by jterrada         ###   ########.fr       */
+/*   Updated: 2025/03/07 15:19:29 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,10 @@ void	assign_forks(t_philo *philo, t_fork *forks, int position)
 		philo->first_fork = &forks[position];
 		philo->second_fork = &forks[(position + 1) % philo_nbr];
 	}
-	
 }
 
 // philos + i for pointer arithmetic
-void philo_init(t_data *data)
+int philo_init(t_data *data)
 {
 	int		i;
 	t_philo	*philo;
@@ -42,8 +41,11 @@ void philo_init(t_data *data)
 		philo->full = false;
 		philo->meals_count = 0;
 		philo->data = data;
+		if (pthread_mutex_init(&philo->philo_mutex, NULL) != 0)
+			return (FAILURE);
 		assign_forks(philo, data->forks, i);
 	}
+	return (SUCCESS);
 }
 
 int	data_init(t_data *data)

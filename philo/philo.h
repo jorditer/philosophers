@@ -6,7 +6,7 @@
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 19:06:39 by jterrada          #+#    #+#             */
-/*   Updated: 2025/03/06 15:05:09 by jterrada         ###   ########.fr       */
+/*   Updated: 2025/03/07 12:31:12 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,15 @@ typedef struct s_fork
 // Each philosopher is a thread
 typedef struct s_philo
 {
-	int			id;
-	long		meals_count;
-	bool		full;
-	long		last_meal_time;
-	t_fork		*first_fork;
-	t_fork		*second_fork;
-	pthread_t	thread_id;
-	t_data		*data;
+	int				id;
+	long			meals_count;
+	bool			full;
+	long			last_meal_time;
+	t_fork			*first_fork;
+	t_fork			*second_fork;
+	pthread_mutex_t philo_mutex;
+	pthread_t		thread_id;
+	t_data			*data;
 }	t_philo;
 
 typedef struct s_data
@@ -113,19 +114,23 @@ int		is_whitespace(char c);
 int		parse_input(t_data *data, int argc, char **argv);
 // init.c
 int		data_init(t_data *data);
+int philo_init(t_data *data);
 // safe_functions.c
 int		safe_malloc(void **ptr, size_t size);
 // start.c
-
+int	dinner_start(t_data *data);
+// clean.c
+void clean_partial_data(t_data *data, int failed_index);
+void	clean_data(t_data *data);
 //utils.c
 int		gettime(t_time_code time_code, long *time);
-void	precise_usleep(long usec, t_data *data);
+int		precise_usleep(long usec, t_data *data);
 // setters.c
-int	set_bool(pthread_mutex_t *mutex, bool *dest, bool value);
-int	get_bool(pthread_mutex_t *mutex, bool *source, bool *dest);
-int	set_long(pthread_mutex_t *mutex, long *dest, long value);
-int	get_long(pthread_mutex_t *mutex, long *source, long *dest);
-int	simulation_finished(t_data *data, bool *dest);
+int		set_bool(pthread_mutex_t *mutex, bool *dest, bool value);
+int		get_bool(pthread_mutex_t *mutex, bool *source, bool *dest);
+int		set_long(pthread_mutex_t *mutex, long *dest, long value);
+int		get_long(pthread_mutex_t *mutex, long *source, long *dest);
+int		simulation_finished(t_data *data, bool *dest);
 // write.c
 int	write_status(t_philo_status status, t_philo *philo, bool debug);
 // sync.c
