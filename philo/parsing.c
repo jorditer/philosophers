@@ -6,7 +6,7 @@
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 12:39:55 by jterrada          #+#    #+#             */
-/*   Updated: 2025/03/07 14:49:26 by jterrada         ###   ########.fr       */
+/*   Updated: 2025/03/07 15:23:05 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,9 @@ int	parse_input(t_data *data, int argc, char **argv)
 	data->time_to_die = ft_atol(argv[2]) * 1e3;
 	data->time_to_eat = ft_atol(argv[3]) * 1e3;
 	data->time_to_sleep = ft_atol(argv[4]) * 1e3;
-	if (data->time_to_die < 60
-		|| data->time_to_eat < 60
-		|| data->time_to_sleep < 60)
+	if (data->time_to_die < 6e4
+		|| data->time_to_eat < 6e4
+		|| data->time_to_sleep < 6e4)
 		return (FAILURE);
 	if (argc == 6)
 		data->nbr_limit_meals = ft_atol(argv[5]);
