@@ -6,7 +6,7 @@
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 12:30:00 by jterrada          #+#    #+#             */
-/*   Updated: 2025/04/28 17:54:04 by jterrada         ###   ########.fr       */
+/*   Updated: 2025/04/28 20:44:29 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	write_status(t_philo_status status, t_philo *philo, int debug)
 	{
 		if ((TAKE_FIRST_FORK == status || TAKE_SECOND_FORK == status)
 			&& !simulation_finished(philo->table))
-			printf("%ld: %d has taken a fork\n", elapsed, philo->id);
+			printf("%ld %d has taken a fork\n", elapsed, philo->id);
 		else if (EATING == status && !simulation_finished(philo->table))
 			printf("%ld %d is eating\n", elapsed, philo->id);
 		else if (SLEEPING == status && !simulation_finished(philo->table))

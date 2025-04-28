@@ -40,6 +40,7 @@ int	data_init(t_table *table)
 	i = -1;
 	table->end_simulation = 0;
 	table->all_threads_ready = 0;
+	table->threads_running_nbr = 0;
 	table->philos = malloc(sizeof(t_philo) * table->philo_nbr);
 	table->forks = malloc(sizeof(t_fork) * table->philo_nbr);
 	pthread_mutex_init(&table->table_mutex, NULL);

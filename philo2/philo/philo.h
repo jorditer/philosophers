@@ -8,7 +8,7 @@
 // already defined in stdlib.h
 // #define EXIT_FAILURE 1;
 // #define EXIT_SUCCESS 0;
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 #define FAILURE -1
 #define SUCCESS 0
 
@@ -55,18 +55,20 @@ typedef struct s_philo
 
 struct s_table
 {
-	long	philo_nbr;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	long	nbr_limit_meals;
-	long	start_simulation;
-	int		end_simulation;
-	int		all_threads_ready;
-	t_mtx	table_mutex;
-	t_mtx	write_mutex;
-	t_fork	*forks;
-	t_philo	*philos;
+	long		philo_nbr;
+	long		time_to_die;
+	long		time_to_eat;
+	long		time_to_sleep;
+	long		nbr_limit_meals;
+	long		start_simulation;
+	int			end_simulation;
+	int			all_threads_ready;
+	long		threads_running_nbr;
+	pthread_t	monitor;
+	t_mtx		table_mutex;
+	t_mtx		write_mutex;
+	t_fork		*forks;
+	t_philo		*philos;
 };
 
 typedef enum e_time_code
@@ -91,6 +93,7 @@ typedef enum	e_status
 //utils.c
 void	precise_usleep(long usec, t_table *table);
 long	gettime(t_time_code time_code);
+void	clean(t_table *table);
 
 // parsing.c
 int	parse_input(t_table *table, char **argv);
@@ -106,8 +109,14 @@ void	set_bool(t_mtx *mutex, int *dest, int value);
 // synchro_utils.c
 long	gettime(t_time_code time_code);
 void	wait_all_threads(t_table *table);
+int		all_threads_running(t_mtx *mutex, long *threads, long philo_nbr);
+void	de_syncronize_philos(t_philo *philo);
+void	increase_long(t_mtx *mutex, long *value);
 // write.c
 void	write_status(t_philo_status status, t_philo *philo, int debug);
 // static void write_status_debug(t_philo_status status, t_philo *philo, long elapsed);
 // dinner.c
 void	dinner_start(t_table *table);
+void	thinking(t_philo *philo, int pre_simulation);
+// monitoring.c
+void	*monitor_dinner(void *data);
