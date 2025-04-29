@@ -1,24 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   safe_functions2.c                                  :+:      :+:    :+:   */
+/*   thinking.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/29 15:32:19 by jterrada          #+#    #+#             */
-/*   Updated: 2025/04/29 23:17:49 by jterrada         ###   ########.fr       */
+/*   Created: 2025/04/29 22:50:06 by jterrada          #+#    #+#             */
+/*   Updated: 2025/04/29 23:16:36 by jterrada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	safe_thread_create(pthread_t *thread, void *(*routine)(void *), void *arg,
-		t_table *table)
+void	thinking(t_philo *philo, int pre_simulation)
 {
-	return (safe_pthread(pthread_create(thread, NULL, routine, arg), table));
-}
+	long	t_eat;
+	long	t_sleep;
+	long	t_think;
 
-int	safe_thread_join(pthread_t thread, t_table *table)
-{
-	return (safe_pthread(pthread_join(thread, NULL), table));
+	if (!pre_simulation)
+		write_status(THINKING, philo);
+	if (philo->table->philo_nbr % 2 == 0)
+		return ;
+	t_eat = philo->table->time_to_eat;
+	t_sleep = philo->table->time_to_sleep;
+	t_think = t_eat * 2 - t_sleep;
+	if (t_think < 0)
+		t_think = 0;
+	precise_usleep(t_think * 0.42, philo->table);
 }

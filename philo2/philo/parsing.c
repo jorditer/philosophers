@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/29 23:00:39 by jterrada          #+#    #+#             */
+/*   Updated: 2025/04/29 23:00:40 by jterrada         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static int	is_digit(char c)
@@ -7,10 +19,10 @@ static int	is_digit(char c)
 
 static int	is_space(char c)
 {
-	return((c >= 9 && c <= 13) || 32 == c);
+	return ((c >= 9 && c <= 13) || 32 == c);
 }
 
-static const char	*valid_input(const char	*str)
+static const char	*valid_input(const char *str)
 {
 	int			len;
 	const char	*n;
@@ -21,7 +33,7 @@ static const char	*valid_input(const char	*str)
 	if (*str == '+')
 		str++;
 	else if (*str == '-')
-		return (NULL); // as in ERROR
+		return (NULL);
 	if (!is_digit(*str))
 		return (NULL);
 	n = str;
@@ -32,11 +44,11 @@ static const char	*valid_input(const char	*str)
 	return (n);
 }
 
- // returns -1 as error
+// returns -1 as error
 static long	ft_atol(const char *str)
 {
 	long	n;
-	
+
 	n = 0;
 	str = valid_input(str);
 	if (!str)
@@ -57,13 +69,10 @@ int	parse_input(t_table *table, char **argv)
 	table->time_to_die = ft_atol(argv[2]) * 1000;
 	table->time_to_eat = ft_atol(argv[3]) * 1000;
 	table->time_to_sleep = ft_atol(argv[4]) * 1000;
-	if (table->time_to_die < 0
-		|| table->time_to_eat < 0
-		|| table->time_to_sleep < 0
-		|| table->philo_nbr < 0)
+	if (table->time_to_die < 0 || table->time_to_eat < 0
+		|| table->time_to_sleep < 0 || table->philo_nbr < 0)
 		return (FAILURE);
-	if (table->time_to_die < 6000
-		|| table->time_to_eat < 6000
+	if (table->time_to_die < 6000 || table->time_to_eat < 6000
 		|| table->time_to_sleep < 6000)
 		return (FAILURE);
 	if (argv[5])
