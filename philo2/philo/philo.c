@@ -1,6 +1,7 @@
 #include "philo.h"
-// ./philo 5 800 200 200 [5];
 
+// ./philo 5 800 200 200 [5];
+//~/.venv/c-formatter/bin/c_formatter_42 your_file.c
 int	main(int argc, char **argv)
 {
 	t_table	table;
