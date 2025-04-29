@@ -18,25 +18,30 @@ void	thinking(t_philo *philo, int pre_simulation)
 	precise_usleep(t_think * 0.42, philo->table);
 }
 
-static void	*lone_philo (void*arg)
+static void	*lone_philo(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
 	wait_all_threads(philo->table);
 	set_long(&philo->philo_mutex, &philo->last_meal_time, gettime(MILLISECOND));
-	increase_long(&philo->table->table_mutex, &philo->table->threads_running_nbr);
+	increase_long(&philo->table->table_mutex,
+		&philo->table->threads_running_nbr);
 	write_status(TAKE_FIRST_FORK, philo, DEBUG_MODE);
 	while (!simulation_finished(philo->table))
 		usleep(200);
 	return (NULL);
 }
-
-static void	eat(t_philo *philo)
+static int	eat(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->first_fork->fork);
+	if (safe_mutex_lock(&philo->first_fork->fork, philo->table) == FAILURE)
+		return (FAILURE);
 	write_status(TAKE_FIRST_FORK, philo, DEBUG_MODE);
-	pthread_mutex_lock(&philo->second_fork->fork);
+	if (safe_mutex_lock(&philo->second_fork->fork, philo->table) == FAILURE)
+	{
+		pthread_mutex_unlock(&philo->first_fork->fork);
+		return (FAILURE);
+	}
 	write_status(TAKE_SECOND_FORK, philo, DEBUG_MODE);
 	set_long(&philo->philo_mutex, &philo->last_meal_time, gettime(MILLISECOND));
 	philo->meals_counter++;
@@ -45,15 +50,19 @@ static void	eat(t_philo *philo)
 	if (philo->table->nbr_limit_meals > 0
 		&& philo->meals_counter == philo->table->nbr_limit_meals)
 		set_bool(&philo->philo_mutex, &philo->full, 1);
-	pthread_mutex_unlock(&philo->first_fork->fork);
-	pthread_mutex_unlock(&philo->second_fork->fork);
+	if (safe_mutex_unlock(&philo->first_fork->fork, philo->table) == FAILURE)
+	{
+		pthread_mutex_unlock(&philo->second_fork->fork);
+		return (FAILURE);
+	}
+	if (safe_mutex_unlock(&philo->second_fork->fork, philo->table) == FAILURE)
+		return (FAILURE);
+	return (SUCCESS);
 }
-
-
 
 void	*dinner_simulation(void *data)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)data;
 	wait_all_threads(philo->table);
@@ -67,8 +76,9 @@ void	*dinner_simulation(void *data)
 		// if (get_bool(&philo->philo_mutex, &philo->full))
 		// 	break ;
 		eat(philo);
-		if (simulation_finished(philo->table) || get_bool(&philo->philo_mutex, &philo->full))
-			break;
+		if (simulation_finished(philo->table) || get_bool(&philo->philo_mutex,
+				&philo->full))
+			break ;
 		write_status(SLEEPING, philo, DEBUG_MODE);
 		precise_usleep(philo->table->time_to_sleep, philo->table);
 		thinking(philo, 0);
@@ -77,26 +87,52 @@ void	*dinner_simulation(void *data)
 }
 
 // else if is the corner case of one philosopher
-void	dinner_start(t_table *table)
+int	dinner_start(t_table *table)
 {
-	int	i;
+	int i;
 
 	i = -1;
 	if (table->nbr_limit_meals == 0)
-		return ;
+		return (SUCCESS);
 	else if (table->philo_nbr == 1)
-		pthread_create(&table->philos[0].thread_id, NULL, lone_philo, &table->philos[0]);
+	{
+		if (safe_thread_create(&table->philos[0].thread_id, lone_philo,
+				&table->philos[0], table) == FAILURE)
+			return (FAILURE);
+	}
 	else
 	{
-		while(++i < table->philo_nbr)
-			pthread_create(&table->philos[i].thread_id, NULL, dinner_simulation, &table->philos[i]);
+		while (++i < table->philo_nbr)
+		{
+			if (safe_thread_create(&table->philos[i].thread_id,
+					dinner_simulation, &table->philos[i], table) == FAILURE)
+			{
+				set_bool(&table->table_mutex, &table->end_simulation, 1);
+				// Wait for already created threads to finish
+				while (--i >= 0)
+					pthread_join(table->philos[i].thread_id, NULL);
+				return (FAILURE);
+			}
+		}
 	}
-	pthread_create(&table->monitor, NULL, monitor_dinner, table);
+	if (safe_thread_create(&table->monitor, monitor_dinner, table,
+			table) == FAILURE)
+	{
+		set_bool(&table->table_mutex, &table->end_simulation, 1);
+		return (FAILURE);
+	}
 	set_bool(&table->table_mutex, &table->all_threads_ready, 1);
 	i = -1;
 	while (++i < table->philo_nbr)
-		pthread_join(table->philos[i].thread_id, NULL);
-	// if we reach here the philosophers are full, hence the bool
+	{
+		if (safe_thread_join(table->philos[i].thread_id, table) == FAILURE)
+		{
+			set_bool(&table->table_mutex, &table->end_simulation, 1);
+			return (FAILURE);
+		}
+	}
 	set_bool(&table->table_mutex, &table->end_simulation, 1);
-	pthread_join(table->monitor, NULL);
+	if (safe_thread_join(table->monitor, table) == FAILURE)
+		return (FAILURE);
+	return (SUCCESS);
 }

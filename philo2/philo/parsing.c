@@ -66,11 +66,13 @@ int	parse_input(t_table *table, char **argv)
 		|| table->time_to_eat < 6000
 		|| table->time_to_sleep < 6000)
 		return (FAILURE);
-	if (argv[5]) // ADDED UNSTABLE
+	if (argv[5])
+	{
 		table->nbr_limit_meals = ft_atol(argv[5]);
-	if (table->nbr_limit_meals < 0)
-		return (FAILURE);
-	// else
-		// table->nbr_limit_meals = -1;
+		if (table->nbr_limit_meals < 0)
+			return (FAILURE);
+	}
+	else
+		table->nbr_limit_meals = -1;
 	return (SUCCESS);
 }

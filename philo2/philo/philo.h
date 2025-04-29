@@ -116,7 +116,18 @@ void	increase_long(t_mtx *mutex, long *value);
 void	write_status(t_philo_status status, t_philo *philo, int debug);
 // static void write_status_debug(t_philo_status status, t_philo *philo, long elapsed);
 // dinner.c
-void	dinner_start(t_table *table);
+int		dinner_start(t_table *table);
 void	thinking(t_philo *philo, int pre_simulation);
 // monitoring.c
 void	*monitor_dinner(void *data);
+// safe_functions.c
+int safe_pthread(int result, t_table *table);;
+int safe_mutex_init(pthread_mutex_t *mutex, t_table *table);
+int safe_mutex_destroy(pthread_mutex_t *mutex, t_table *table);
+int safe_mutex_lock(pthread_mutex_t *mutex, t_table *table);
+int safe_mutex_unlock(pthread_mutex_t *mutex, t_table *table);
+
+//safe_functions2.c
+int safe_thread_create(pthread_t *thread, void *(*routine)(void *), 
+                      void *arg, t_table *table);
+int safe_thread_join(pthread_t thread, t_table *table);

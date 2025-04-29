@@ -6,7 +6,7 @@
 #    By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/14 21:11:29 by jordi             #+#    #+#              #
-#    Updated: 2025/04/28 18:19:36 by jterrada         ###   ########.fr        #
+#    Updated: 2025/04/29 15:32:11 by jterrada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,8 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 NAME = philo
 SRC = philo.c utils.c parsing.c safe_functions.c init.c dinner.c \
-		synchro_utils.c getters_setters.c write.c monitoring.c
+		synchro_utils.c getters_setters.c write.c monitoring.c \
+		safe_functions2.c
 # SRC = philo.c parsing.c init.c
 OBJ = $(SRC:.c=.o)
 HEADERS = -I. -pthread
