@@ -6,11 +6,11 @@
 #    By: jterrada <jterrada@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/14 21:11:29 by jordi             #+#    #+#              #
-#    Updated: 2025/04/29 22:50:33 by jterrada         ###   ########.fr        #
+#    Updated: 2025/06/11 00:53:25 by jterrada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = cc
+CC = cc 
 CFLAGS = -Wall -Wextra -Werror -g
 NAME = philo
 SRC = philo.c utils.c parsing.c safe_functions.c init.c dinner.c \
